@@ -1,0 +1,30 @@
+---
+abstract: 'Predefined timer pointcut'
+author:
+  - 'Adam Kennedy <adamk@cpan.org>'
+build_requires:
+  ExtUtils::MakeMaker: 6.42
+  Test::More: 0.47
+configure_requires:
+  ExtUtils::MakeMaker: 6.42
+distribution_type: module
+generated_by: 'Module::Install version 0.91'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+module_name: Aspect::Library::Timer
+name: Aspect-Library-Timer
+no_index:
+  directory:
+    - inc
+    - t
+requires:
+  Aspect::Modular: 0.38
+  Time::HiRes: 1.9718
+  perl: 5.8.2
+resources:
+  ChangeLog: http://fisheye2.atlassian.com/changelog/cpan/trunk/Aspect-Library-Timer
+  license: http://dev.perl.org/licenses/
+  repository: http://svn.ali.as/cpan/trunk/Aspect-Library-Timer
+version: 0.01
