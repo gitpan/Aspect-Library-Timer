@@ -28,7 +28,7 @@ AUTHOR
     Adam Kennedy <adamk@cpan.org>
 
 SEE ALSO
-    Aspect
+    Aspect, Aspect::Library::ZoneTimer
 
 COPYRIGHT
     Copyright 2009 - 2010 Adam Kennedy.

@@ -9,13 +9,15 @@ inc/Module/Install/Metadata.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
 lib/Aspect/Library/Timer.pm
+lib/Aspect/Library/ZoneTimer.pm
 LICENSE
 Makefile.PL
 MANIFEST			This list of files
 META.yml
 README
 t/01_compile.t
-t/02_main.t
-t/97_meta.t
-t/98_pod.t
-t/99_pmv.t
+t/02_timer.t
+t/03_zone.t
+xt/meta.t
+xt/pmv.t
+xt/pod.t
