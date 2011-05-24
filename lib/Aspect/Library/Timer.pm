@@ -3,12 +3,12 @@ package Aspect::Library::Timer;
 use 5.008002;
 use strict;
 use warnings;
-use Aspect::Modular 0.90 ();
+use Aspect::Modular 0.98 ();
 use Time::HiRes   1.9718 ();
 
 use vars qw{$VERSION @ISA};
 BEGIN {
-	$VERSION = '1.05';
+	$VERSION = '1.06';
 	@ISA     = 'Aspect::Modular';
 }
 
@@ -22,7 +22,7 @@ sub get_advice {
 		code     => sub {
 			# Capture the time
 			my @start = Time::HiRes::gettimeofday();
-			$_->run_original;
+			$_->proceed;
 			my @stop  = Time::HiRes::gettimeofday();
 
 			# Process the time
@@ -92,7 +92,7 @@ L<Aspect>, L<Aspect::Library::ZoneTimer>
 
 =head1 COPYRIGHT
 
-Copyright 2009 - 2010 Adam Kennedy.
+Copyright 2009 - 2011 Adam Kennedy.
 
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.

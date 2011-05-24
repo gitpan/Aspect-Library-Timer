@@ -3,15 +3,15 @@ package Aspect::Library::ZoneTimer;
 use 5.008002;
 use strict;
 use warnings;
-use Carp                          ();
-use Params::Util             1.00 ();
-use Aspect::Modular          0.90 ();
-use Aspect::Advice::Around   0.90 ();
-use Time::HiRes            1.9718 ();
+use Carp                   ();
+use Params::Util      1.00 ();
+use Aspect::Modular   0.98 ();
+use Aspect::Advice::Around ();
+use Time::HiRes     1.9718 ();
 
 use vars qw{$VERSION @ISA};
 BEGIN {
-	$VERSION = '1.05';
+	$VERSION = '1.06';
 	@ISA     = 'Aspect::Modular';
 }
 
@@ -44,14 +44,14 @@ sub get_advice {
 			code     => sub {
 				# Shortcut if we are inside the same zone
 				if ( @STACK and $STACK[-1]->[0] eq $zone ) {
-					$_->run_original;
+					$_->proceed;
 					return;
 				}
 
 				# Execute the function and capture timing
 				push @STACK, [ $zone, { } ];
 				my @start = Time::HiRes::gettimeofday();
-				$_->run_original;
+				$_->proceed;
 				my @stop  = Time::HiRes::gettimeofday();
 				my $frame = pop @STACK;
 				my $total = $frame->[1];
@@ -215,7 +215,7 @@ L<Aspect>, L<Aspect::Library::Timer>
 
 =head1 COPYRIGHT
 
-Copyright 2010 Adam Kennedy.
+Copyright 2010 - 2011 Adam Kennedy.
 
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.
