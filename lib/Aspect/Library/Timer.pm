@@ -8,7 +8,7 @@ use Time::HiRes   1.9718 ();
 
 use vars qw{$VERSION @ISA};
 BEGIN {
-	$VERSION = '1.07';
+	$VERSION = '1.08';
 	@ISA     = 'Aspect::Modular';
 }
 
@@ -92,7 +92,7 @@ L<Aspect>, L<Aspect::Library::ZoneTimer>
 
 =head1 COPYRIGHT
 
-Copyright 2009 - 2011 Adam Kennedy.
+Copyright 2009 - 2012 Adam Kennedy.
 
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.

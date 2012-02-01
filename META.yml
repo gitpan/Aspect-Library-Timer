@@ -3,12 +3,13 @@ abstract: Prebuilt
 author:
   - 'Adam Kennedy <adamk@cpan.org>'
 build_requires:
-  ExtUtils::MakeMaker: 6.42
+  ExtUtils::MakeMaker: 6.62
   Test::More: 0.47
 configure_requires:
-  ExtUtils::MakeMaker: 6.42
+  ExtUtils::MakeMaker: 6.62
 distribution_type: module
-generated_by: 'Module::Install version 1.01'
+dynamic_config: 0
+generated_by: 'Module::Install version 1.04'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -29,4 +30,4 @@ resources:
   ChangeLog: http://fisheye2.atlassian.com/changelog/cpan/trunk/Aspect-Library-Timer
   license: http://dev.perl.org/licenses/
   repository: http://svn.ali.as/cpan/trunk/Aspect-Library-Timer
-version: 1.07
+version: 1.08
