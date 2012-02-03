@@ -8,7 +8,7 @@ use Time::HiRes   1.9718 ();
 
 use vars qw{$VERSION @ISA};
 BEGIN {
-	$VERSION = '1.08';
+	$VERSION = '1.09';
 	@ISA     = 'Aspect::Modular';
 }
 
@@ -16,26 +16,45 @@ sub get_advice {
 	my $self     = shift;
 	my $pointcut = shift;
 	my $handler  = @_ ? shift : \&handler;
+	my $DISABLE  = 0;
 	Aspect::Advice::Around->new(
 		lexical  => $self->lexical,
 		pointcut => $pointcut,
 		code     => sub {
+			# Prevent recursion in the report handler
+			if ( $DISABLE ) {
+				$_->proceed;
+				return;
+			}
+
 			# Capture the time
-			my @start = Time::HiRes::gettimeofday();
-			$_->proceed;
-			my @stop  = Time::HiRes::gettimeofday();
+			my $error = '';
+			SCOPE: {
+				local $@;
+				my @start = Time::HiRes::gettimeofday();
+				eval {
+					$_->proceed;
+				};
+				$error = $@;
+				my @stop  = Time::HiRes::gettimeofday();
 
-			# Process the time
-			$handler->(
-				$_->sub_name,
-				\@start,
-				\@stop,
-				Time::HiRes::tv_interval(
-					\@start,
-					\@stop,
-				)
-			);
+				# Process the time
+				$DISABLE++;
+				eval {
+					$handler->(
+						$_->sub_name,
+						\@start,
+						\@stop,
+						Time::HiRes::tv_interval(
+							\@start,
+							\@stop,
+						)
+					);
+				};
+				$DISABLE--;
+			}
 
+			die $error if $error;
 			return;
 		},
 	);

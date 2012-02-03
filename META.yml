@@ -30,4 +30,4 @@ resources:
   ChangeLog: http://fisheye2.atlassian.com/changelog/cpan/trunk/Aspect-Library-Timer
   license: http://dev.perl.org/licenses/
   repository: http://svn.ali.as/cpan/trunk/Aspect-Library-Timer
-version: 1.08
+version: 1.09

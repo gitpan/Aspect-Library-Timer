@@ -11,7 +11,7 @@ use Time::HiRes     1.9718 ();
 
 use vars qw{$VERSION @ISA};
 BEGIN {
-	$VERSION = '1.08';
+	$VERSION = '1.09';
 	@ISA     = 'Aspect::Modular';
 }
 
@@ -43,60 +43,71 @@ sub get_advice {
 			pointcut => $pointcut,
 			code     => sub {
 				# Shortcut if we are inside the same zone
-				if ( @STACK and $STACK[-1]->[0] eq $zone ) {
+				# or inside the handler.
+				if ( $DISABLE or @STACK and $STACK[-1]->[0] eq $zone ) {
 					$_->proceed;
 					return;
 				}
 
 				# Execute the function and capture timing
-				push @STACK, [ $zone, { } ];
-				my @start = Time::HiRes::gettimeofday();
-				$_->proceed;
-				my @stop  = Time::HiRes::gettimeofday();
-				my $frame = pop @STACK;
-				my $total = $frame->[1];
-
-				# Use our own interval math, generating a value
-				# in integer microseconds, to avoid potential
-				# floating point bugs in Time::HiRes::tv_interval.
-				my $interval = ( $stop[0]  * 1000000 + $stop[1]  )
-				             - ( $start[0] * 1000000 + $start[1] );
-
-				if ( @STACK ) {
-					# Calculate the exclusive time for the
-					# current stack frame and merge up to 
-					# the totals already in our parent.
-					my $parent = $STACK[-1]->[1];
-					foreach my $z ( keys %$total ) {
-						$interval -= $total->{$z};
-						$parent->{$z} += $total->{$z};
-					}
-					$parent->{$zone} += $interval;
-
-				} else {
-					# Calculate the exclusive time for the current
-					# zone and add it to any reentered zone
-					# beneath us.
-					foreach my $z ( keys %$total ) {
-						$interval -= $total->{$z};
-					}
-					$total->{$zone} += $interval;
-
-					# Send the report to the handler, including
-					# our start and stop times in case they are
-					# handy for the report.
-					$DISABLE++;
+				my $error = '';
+				SCOPE: {
+					local $@;
+					push @STACK, [ $zone, { } ];
+					my @start = Time::HiRes::gettimeofday();
 					eval {
-						$handler->(
-							$zone,
-							\@start,
-							\@stop,
-							$total,
-						);
+						$_->proceed;
 					};
-					$DISABLE--;
-					die $@ if $@;
+					$error = $@;
+					my @stop  = Time::HiRes::gettimeofday();
+					my $frame = pop @STACK;
+					my $total = $frame->[1];
+
+					# Use our own interval math, generating a value
+					# in integer microseconds, to avoid potential
+					# floating point bugs in Time::HiRes::tv_interval.
+					my $interval = ( $stop[0]  * 1000000 + $stop[1]  )
+						     - ( $start[0] * 1000000 + $start[1] );
+
+					if ( @STACK ) {
+						# Calculate the exclusive time for the
+						# current stack frame and merge up to 
+						# the totals already in our parent.
+						my $parent = $STACK[-1]->[1];
+						foreach my $z ( keys %$total ) {
+							$interval -= $total->{$z};
+							$parent->{$z} += $total->{$z};
+						}
+						$parent->{$zone} += $interval;
+
+					} else {
+						# Calculate the exclusive time for the current
+						# zone and add it to any reentered zone
+						# beneath us.
+						foreach my $z ( keys %$total ) {
+							$interval -= $total->{$z};
+						}
+						$total->{$zone} += $interval;
+
+						# Send the report to the handler, including
+						# our start and stop times in case they are
+						# handy for the report.
+						$DISABLE++;
+						eval {
+							$handler->(
+								$zone,
+								\@start,
+								\@stop,
+								$total,
+							);
+						};
+						$DISABLE--;
+					}
 				}
+
+				# Pass through any exceptions
+				die $error if $error;
+				return;
 			},
 		);
 	}

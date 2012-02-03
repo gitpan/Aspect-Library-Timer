@@ -51,6 +51,6 @@
       },
       "x_ChangeLog" : "http://fisheye2.atlassian.com/changelog/cpan/trunk/Aspect-Library-Timer"
    },
-   "version" : "1.08",
+   "version" : "1.09",
    "x_module_name" : "Aspect::Library::Timer"
 }

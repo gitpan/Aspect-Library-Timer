@@ -19,6 +19,7 @@ README
 t/01_compile.t
 t/02_timer.t
 t/03_zone.t
+t/04_exception.t
 xt/meta.t
 xt/pmv.t
 xt/pod.t
